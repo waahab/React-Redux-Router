@@ -4,45 +4,32 @@ import { connect } from 'react-redux';
 import ChatBox from './chatbox';
 
 class Chat extends Component {
-    constructor(props) {
-        super(props)
-    }
-    setRecipient(recUser) {
-        console.log('recipient', recUser);
-
-        this.props.changeRecUID(recUser);
-        this.props.history.push('/chatbox');
+    setRecipient = (recUser) => {
+        const { changeRecUID, history } = this.props
+        changeRecUID(recUser);
+        history.push('/chatbox');
     }
     render() {
-        console.log(this.props.currentUser, '////////////////');
-        console.log(this.props.allUsers, 'allUsers')
-        console.log(this.props.allMessages, 'aaaaaaaaaa');
+        const { allUsers } = this.props
         return (
             <div>
                 <h1>Hello Chat</h1>
-                {this.props.allUsers ?
+                {allUsers ?
                     <ul>
-                        {
-
-                            this.props.allUsers.map((user, index) => {
-                                return (
-                                    <li><button key={index} onClick={this.setRecipient.bind(this, user, user.username)}>{user.username}</button></li>
-                                )
-                            })
+                        {allUsers.map((user, index) => {
+                            return (
+                                <li><button key={index} onClick={this.setRecipient.bind(this, user, user.username)}>{user.username}</button></li>
+                            )
+                        })
                         }
-                    </ul>
-                    :
-                    null
+                    </ul> : null
                 }
-
-                {/* <ChatBox /> */}
-
             </div>
         )
     }
 }
 
-function mapStateToProp(state) {
+const mapStateToProp = (state) => {
     return ({
         currentUser: state.root.currentUser,
         allUsers: state.root.users,
@@ -50,9 +37,8 @@ function mapStateToProp(state) {
         recipientID: state.root.recipientID
     })
 }
-function mapDispatchToProp(dispatch) {
+const mapDispatchToProp = (dispatch) => {
     return ({
-        // changeUserName: ()=>{dispatch(changeUserName())}
         changeRecUID: (recUser) => {
             dispatch(changeRecipientUID(recUser));
         }

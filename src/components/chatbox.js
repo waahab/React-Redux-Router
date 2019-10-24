@@ -10,57 +10,54 @@ class ChatBox extends Component {
             textAreaVal: ''
         }
     }
-    _textAreaHandler(event) {
+    _textAreaHandler = (event) => {
         this.setState({
             textAreaVal: event.target.value
         })
     }
-    sendMessage() {
-        console.log(this.state.textAreaVal);
+    sendMessage = () => {
+        const { sendMessage, currentUser, recipientID } = this.props
+        const { textAreaVal } = this.state
         let messageData = {
-            senderID: this.props.currentUser,
-            receiverID: this.props.recipientID,
-            message: this.state.textAreaVal
+            senderID: currentUser,
+            receiverID: recipientID,
+            message: textAreaVal
         }
-        console.log(messageData, 'messageDatamessageData');
-        this.props.sendMessage(messageData);
+        sendMessage(messageData);
     }
     render() {
-        console.log(this.props.messages, 'aaaaaaaaaa')
+        const { recipientName, messages, recipientID, currentUser } = this.props;
+        const { textAreaVal } = this.state
         return (
             <div>
-                <h2>{this.props.recipientName}</h2>
+                <h2>{recipientName}</h2>
                 <div style={{ width: '250px', height: '300px', border: '2px solid black' }}>
 
-                    {this.props.messages.map((msg, ind) => {
-                        return (msg.receiverID === this.props.recipientID && msg.senderID === this.props.currentUser) || (msg.receiverID === this.props.currentUser && msg.senderID === this.props.recipientID) ?
+                    {messages.map((msg, ind) => {
+                        return (msg.receiverID === recipientID && msg.senderID === currentUser) || (msg.receiverID === currentUser && msg.senderID === recipientID) ?
                             <ul style={{ border: '1px solid red', height: '40px', overflow: 'scroll' }}>
-                                {
-                                    msg.receiverID === this.props.recipientID ?
-                                        <li style={{ listStyleType: 'none', textAlign: 'start', border: '1px solid blue' }}>
-                                            {msg.message}
-                                        </li>
-                                        :
-                                        <li style={{ listStyleType: 'none', textAlign: 'end', border: '1px solid blue' }}>
-                                            {msg.message}
-                                        </li>
-                                }
+                                {msg.receiverID === recipientID ?
+                                    <li style={{ listStyleType: 'none', textAlign: 'start', border: '1px solid blue' }}>
+                                        {msg.message}
+                                    </li>
+                                    :
+                                    <li style={{ listStyleType: 'none', textAlign: 'end', border: '1px solid blue' }}>
+                                        {msg.message}
+                                    </li>}
                             </ul>
                             :
                             null
                     })}
 
                 </div>
-                <textarea value={this.state.textAreaVal} onChange={this._textAreaHandler.bind(this)}></textarea>
+                <textarea value={textAreaVal} onChange={this._textAreaHandler.bind(this)}></textarea>
                 <button onClick={this.sendMessage.bind(this)}>send</button>
-
-
             </div>
         )
     }
 }
 
-function mapStateToProp(state) {
+const mapStateToProp = (state) => {
     console.log('state**', state)
     return ({
         currentUser: state.root.currentUser,
@@ -70,9 +67,8 @@ function mapStateToProp(state) {
     })
 }
 
-function mapDispatchToProp(dispatch) {
+const mapDispatchToProp = (dispatch) => {
     return ({
-        // changeUserName: ()=>{dispatch(changeUserName())}
         sendMessage: (msg) => {
             dispatch(sendMessage(msg));
         }
